@@ -2,7 +2,7 @@
 let usageData = {};
 let totalCans = 0;
 let chart;
-let currentChartType = 'doughnut';
+let currentChartType = 'line'; // Default chart type
 let pricePerCan = 5.99; // Default price per can including NYC sales tax
 
 // Load data from localStorage on page load
