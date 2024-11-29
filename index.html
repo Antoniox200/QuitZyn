@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Zyn Usage Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="dashboard">
+        <header>
+            <h1>Zyn Usage Tracker</h1>
+            <button id="settingsButton" class="settings-button" aria-label="Settings">&#9881;</button>
+        </header>
+        <div class="widget">
+            <button id="incrementButton">Log Zyn Usage (+1)</button>
+            <input type="number" id="zynIncrement" min="1" placeholder="Enter amount to add">
+            <button id="addButton">Add Zyns</button>
+        </div>
+        <div class="stats">
+            <div class="stat-widget">
+                <h2>Today's Usage</h2>
+                <p id="todayZyns">0</p>
+            </div>
+            <div class="stat-widget">
+                <h2>Total Cans Used</h2>
+                <p id="totalCans">0</p>
+            </div>
+            <div class="stat-widget">
+                <h2>Spent Today</h2>
+                <p id="spentToday">$0.00</p>
+            </div>
+            <div class="stat-widget">
+                <h2>Total Spent</h2>
+                <p id="totalSpent">$0.00</p>
+            </div>
+            <div class="stat-widget comparison-widget">
+                <h2>Vs Average</h2>
+                <p id="amountAvg" class="comparison-value">0</p>
+                <p id="percentAvg" class="comparison-percentage">0%</p>
+            </div>
+            <div class="stat-widget comparison-widget">
+                <h2>Vs Yesterday</h2>
+                <p id="amountYesterday" class="comparison-value">0</p>
+                <p id="percentYesterday" class="comparison-percentage">0%</p>
+            </div>
+            <div class="stat-widget comparison-widget">
+                <h2>Vs Last Week</h2>
+                <p id="amountLastWeek" class="comparison-value">0</p>
+                <p id="percentLastWeek" class="comparison-percentage">0%</p>
+            </div>
+        </div>
+        <div class="chart-container">
+            <button id="toggleChartButton" class="chart-toggle-button">Switch to Line Chart</button>
+            <canvas id="usageChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal" class="close-button" aria-label="Close">&times;</span>
+            <h2>Settings</h2>
+            <div class="settings-item">
+                <label for="pricePerCan">Price per Can ($):</label>
+                <input type="number" id="pricePerCan" min="0" step="0.01" value="5.99">
+            </div>
+            <button id="saveSettingsButton" class="primary-button">Save Settings</button>
+            <button id="clearDataButton" class="danger-button">Clear All Data</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
