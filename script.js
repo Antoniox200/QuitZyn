@@ -4,6 +4,7 @@ let totalCans = 0;
 let chart;
 let currentChartType = 'line'; // Default chart type
 let pricePerCan = 5.99; // Default price per can including NYC sales tax
+let actionStack = [];
 
 // Load data from localStorage on page load
 window.onload = function () {
@@ -15,6 +16,7 @@ window.onload = function () {
 // Event listeners for buttons
 document.getElementById('incrementButton').addEventListener('click', function () {
     logUsage(1);
+    actionStack.push({ action: 'increment', amount: 1 });
 });
 
 document.getElementById('addButton').addEventListener('click', function () {
@@ -24,6 +26,7 @@ document.getElementById('addButton').addEventListener('click', function () {
         return;
     }
     logUsage(increment);
+    actionStack.push({ action: 'add', amount: increment });
     document.getElementById('zynIncrement').value = '';
 });
 
@@ -31,10 +34,27 @@ document.getElementById('toggleChartButton').addEventListener('click', function 
     toggleChartType();
 });
 
+document.getElementById('undoButton').addEventListener('click', () => {
+    if (actionStack.length > 0) {
+        let lastAction = actionStack.pop();
+        if (lastAction.action === 'increment') {
+            logUsage(-lastAction.amount);
+        } else if (lastAction.action === 'add') {
+            logUsage(-lastAction.amount);
+        }
+    }
+});
+
 // Function to log usage
 function logUsage(amount) {
     let today = getFormattedDate(new Date());
-    usageData[today] = (usageData[today] || 0) + amount;
+    if (!usageData[today]) {
+        usageData[today] = 0;
+    }
+    usageData[today] += amount;
+    if (usageData[today] < 0) {
+        usageData[today] = 0;
+    }
     saveData();
     updateStats();
     renderChart();
