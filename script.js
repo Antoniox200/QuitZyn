@@ -73,6 +73,7 @@ function updateStats() {
     let todayUsage = usageData[today] || 0;
     document.getElementById('todayZyns').innerText = todayUsage;
     document.getElementById('totalCans').innerText = totalCans;
+    document.getElementById('totalZynsUsed').innerText = getTotalZyns();
 
     // Calculate spending
     let spentToday = ((todayUsage / 15) * pricePerCan).toFixed(2);
