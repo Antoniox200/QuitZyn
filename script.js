@@ -1,5 +1,5 @@
 // Initialize variables
-let usageData = {};
+let usageData = [];
 let totalCans = 0;
 let chart;
 let currentChartType = 'line'; // Default chart type
@@ -47,13 +47,9 @@ document.getElementById('undoButton').addEventListener('click', () => {
 
 // Function to log usage
 function logUsage(amount) {
-    let today = getFormattedDate(new Date());
-    if (!usageData[today]) {
-        usageData[today] = 0;
-    }
-    usageData[today] += amount;
-    if (usageData[today] < 0) {
-        usageData[today] = 0;
+    let now = new Date();
+    for (let i = 0; i < amount; i++) {
+        usageData.push(now.toISOString());
     }
     saveData();
     updateStats();
@@ -89,8 +85,7 @@ function saveData() {
 
 // Function to update stats on the UI
 function updateStats() {
-    let today = getFormattedDate(new Date());
-    let todayUsage = usageData[today] || 0;
+    let todayUsage = getTodayUsage();
     document.getElementById('todayZyns').innerText = todayUsage;
     document.getElementById('totalCans').innerText = totalCans;
     document.getElementById('totalZynsUsed').innerText = getTotalZyns();
@@ -110,6 +105,11 @@ function updateStats() {
     updateComparison('Avg', todayUsage, avgUsage);
     updateComparison('Yesterday', todayUsage, yesterdayUsage);
     updateComparison('LastWeek', todayUsage, lastWeekUsage);
+
+    // Update average time stats
+    document.getElementById('avgTimeBetweenZyns').innerText = `${getAverageTimeBetweenZyns()} minutes`;
+    document.getElementById('avgTimeToday').innerText = `${getAverageTimeBetweenZynsToday()} minutes`;
+    document.getElementById('timeSinceLastUsed').innerText = getTimeSinceLastUsed();
 }
 
 // Function to update comparison widgets
@@ -135,14 +135,19 @@ function updateComparison(idSuffix, current, previous) {
 
 // Function to get total Zyns used
 function getTotalZyns() {
-    return Object.values(usageData).reduce((a, b) => a + b, 0);
+    return usageData.length;
+}
+
+// Function to get today's usage
+function getTodayUsage() {
+    let today = getFormattedDate(new Date());
+    return usageData.filter(timestamp => getFormattedDate(new Date(timestamp)) === today).length;
 }
 
 // Function to get average usage
 function getAverageUsage() {
-    let total = getTotalZyns();
-    let days = Object.keys(usageData).length || 1;
-    return total / days;
+    let daysUsed = new Set(usageData.map(timestamp => getFormattedDate(new Date(timestamp)))).size || 1;
+    return getTotalZyns() / daysUsed;
 }
 
 // Function to get usage for N days ago
@@ -150,7 +155,7 @@ function getUsageForDaysAgo(daysAgo) {
     let date = new Date();
     date.setDate(date.getDate() - daysAgo);
     let formattedDate = getFormattedDate(date);
-    return usageData[formattedDate] || 0;
+    return usageData.filter(timestamp => getFormattedDate(new Date(timestamp)) === formattedDate).length;
 }
 
 // Function to calculate percentage difference
@@ -165,6 +170,43 @@ function getFormattedDate(date) {
     return date.toISOString().split('T')[0];
 }
 
+// Function to calculate average time between Zyns used
+function getAverageTimeBetweenZyns() {
+    if (usageData.length < 2) return 0;
+    let timestamps = usageData.map(timestamp => new Date(timestamp)).sort((a, b) => a - b);
+    let totalDiff = 0;
+    for (let i = 1; i < timestamps.length; i++) {
+        totalDiff += (timestamps[i] - timestamps[i - 1]);
+    }
+    return (totalDiff / (usageData.length - 1) / (1000 * 60)).toFixed(2); // in minutes
+}
+
+// Function to calculate average time between Zyns used today
+function getAverageTimeBetweenZynsToday() {
+    let today = getFormattedDate(new Date());
+    let todayTimestamps = usageData
+        .filter(timestamp => getFormattedDate(new Date(timestamp)) === today)
+        .map(timestamp => new Date(timestamp))
+        .sort((a, b) => a - b);
+    if (todayTimestamps.length < 2) return 0;
+    let totalDiff = 0;
+    for (let i = 1; i < todayTimestamps.length; i++) {
+        totalDiff += (todayTimestamps[i] - todayTimestamps[i - 1]);
+    }
+    return (totalDiff / (todayTimestamps.length - 1) / (1000 * 60)).toFixed(2); // in minutes
+}
+
+// Function to calculate time since last used
+function getTimeSinceLastUsed() {
+    if (usageData.length === 0) return 'Never';
+    let lastUsedTimestamp = new Date(usageData[usageData.length - 1]);
+    let now = new Date();
+    let diffMs = now - lastUsedTimestamp;
+    let diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    let diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    return `${diffHours}h ${diffMinutes}m ago`;
+}
+
 // Function to render the chart
 function renderChart() {
     let labels = [];
@@ -177,7 +219,7 @@ function renderChart() {
         tempDate.setDate(date.getDate() - i);
         let formattedDate = getFormattedDate(tempDate);
         labels.push(formattedDate);
-        data.push(usageData[formattedDate] || 0);
+        data.push(usageData.filter(timestamp => getFormattedDate(new Date(timestamp)) === formattedDate).length);
     }
 
     if (chart) {
@@ -326,7 +368,7 @@ clearDataButton.onclick = function () {
 
 // Function to clear all data
 function clearAllData() {
-    usageData = {};
+    usageData = [];
     totalCans = 0;
     localStorage.removeItem('usageData');
     localStorage.removeItem('totalCans');
