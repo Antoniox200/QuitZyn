@@ -1,4 +1,4 @@
-# Zyn Usage Tracker
+# QuitZyn: A Smart Zyn Usage Tracker
 
 ## Overview
 The **Zyn Usage Tracker** is a web application designed to help users monitor their Zyn consumption. It provides detailed statistics, comparisons, and visualizations to help users track their usage patterns over time.
@@ -37,7 +37,7 @@ The **Zyn Usage Tracker** is a web application designed to help users monitor th
 Contributions are welcome! Please fork the repository and create a pull request with your changes.
 
 ## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## Acknowledgements
 - [Chart.js](https://www.chartjs.org/) for the charting library.
