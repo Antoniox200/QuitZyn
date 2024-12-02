@@ -110,6 +110,9 @@ function updateStats() {
     document.getElementById('avgTimeBetweenZyns').innerText = `${getAverageTimeBetweenZyns()} minutes`;
     document.getElementById('avgTimeToday').innerText = `${getAverageTimeBetweenZynsToday()} minutes`;
     document.getElementById('timeSinceLastUsed').innerText = getTimeSinceLastUsed();
+
+    // Update earliest Zyn time today
+    document.getElementById('earliestZynTime').innerText = getEarliestZynTimeToday();
 }
 
 // Function to update comparison widgets
@@ -205,6 +208,29 @@ function getTimeSinceLastUsed() {
     let diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     let diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
     return `${diffHours}h ${diffMinutes}m ago`;
+}
+
+// Function to get earliest Zyn time today
+function getEarliestZynTimeToday() {
+    let today = getFormattedDate(new Date());
+    let todayTimestamps = usageData
+        .filter(timestamp => getFormattedDate(new Date(timestamp)) === today)
+        .map(timestamp => new Date(timestamp))
+        .sort((a, b) => a - b);
+    if (todayTimestamps.length === 0) return 'No Zyns used today';
+    let earliestTime = todayTimestamps[0];
+    return formatTime(earliestTime);
+}
+
+// Function to format time as 'HH:MM AM/PM'
+function formatTime(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Convert hour '0' to '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    return `${hours}:${minutes} ${ampm}`;
 }
 
 // Function to render the chart
