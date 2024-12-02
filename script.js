@@ -536,8 +536,13 @@ saveSettingsButton.onclick = function () {
     pricePerCan = newPrice;
     
     // Get selected time format
-    let selectedFormat = document.querySelector('input[name="timeFormat"]:checked').value;
-    timeFormat = selectedFormat;
+    let radios = document.getElementsByName('timeFormat');
+    for (let i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+            timeFormat = radios[i].value;
+            break;
+        }
+    }
     
     saveData();
     updateStats();

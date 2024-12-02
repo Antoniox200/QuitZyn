@@ -101,12 +101,14 @@
             </div>
             <div class="settings-item">
                 <label>Time Format:</label>
-                <label>
-                    <input type="radio" name="timeFormat" value="24" checked> 24-Hour
-                </label>
-                <label>
-                    <input type="radio" name="timeFormat" value="12"> 12-Hour
-                </label>
+                <div>
+                    <input type="radio" id="timeFormat24" name="timeFormat" value="24" checked>
+                    <label for="timeFormat24">24-Hour</label>
+                </div>
+                <div>
+                    <input type="radio" id="timeFormat12" name="timeFormat" value="12">
+                    <label for="timeFormat12">12-Hour</label>
+                </div>
             </div>
             <button id="saveSettingsButton" class="primary-button">Save Settings</button>
             <button id="clearDataButton" class="danger-button">Clear All Data</button>
