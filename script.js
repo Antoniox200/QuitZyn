@@ -6,12 +6,25 @@ let currentChartType = 'line'; // Default chart type
 let pricePerCan = 5.99; // Default price per can including NYC sales tax
 let actionStack = [];
 
+// Variables for the hourly breakdown chart
+let selectedDate = getDateWithoutTime(new Date()); // Default to today
+let earliestDateWithData;
+let latestDateWithData;
+let hourlyChart; // Define the hourlyChart variable
+
 // Load data from localStorage on page load
 window.onload = function () {
     loadData();
     updateStats();
     renderChart();
+    updateHourlyChart();
+    updateDateNavigation();
 };
+
+// Utility function to strip time components from a date
+function getDateWithoutTime(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
 
 // Event listeners for buttons
 document.getElementById('incrementButton').addEventListener('click', function () {
@@ -45,6 +58,15 @@ document.getElementById('undoButton').addEventListener('click', () => {
     }
 });
 
+// Event listeners for date navigation
+document.getElementById('prevDayButton').addEventListener('click', function() {
+    changeSelectedDate(-1);
+});
+
+document.getElementById('nextDayButton').addEventListener('click', function() {
+    changeSelectedDate(1);
+});
+
 // Function to log usage
 function logUsage(amount) {
     let now = new Date();
@@ -54,6 +76,8 @@ function logUsage(amount) {
     saveData();
     updateStats();
     renderChart();
+    updateHourlyChart();
+    updateDateNavigation();
 }
 
 // Function to load data from localStorage
@@ -344,6 +368,108 @@ function toggleChartType() {
     renderChart();
 }
 
+// Function to change the selected date
+function changeSelectedDate(delta) {
+    selectedDate.setDate(selectedDate.getDate() + delta);
+    selectedDate = getDateWithoutTime(selectedDate); // Zero out time components
+    updateHourlyChart();
+    updateDateNavigation();
+}
+
+// Function to update the date navigation controls
+function updateDateNavigation() {
+    if (usageData.length === 0) {
+        // Disable navigation if no data
+        document.getElementById('prevDayButton').disabled = true;
+        document.getElementById('nextDayButton').disabled = true;
+        document.getElementById('selectedDate').innerText = 'No Data';
+        return;
+    }
+
+    // Find the earliest and latest dates with data
+    let datesWithData = usageData.map(timestamp => getDateWithoutTime(new Date(timestamp)));
+    earliestDateWithData = new Date(Math.min(...datesWithData.map(date => date.getTime())));
+    latestDateWithData = new Date(Math.max(...datesWithData.map(date => date.getTime())));
+
+    // Disable prev button if selectedDate is less than or equal to earliestDateWithData
+    if (selectedDate <= earliestDateWithData) {
+        document.getElementById('prevDayButton').disabled = true;
+    } else {
+        document.getElementById('prevDayButton').disabled = false;
+    }
+
+    // Disable next button if selectedDate is greater than or equal to latestDateWithData or today
+    let today = getDateWithoutTime(new Date());
+    if (selectedDate >= latestDateWithData || selectedDate >= today) {
+        document.getElementById('nextDayButton').disabled = true;
+    } else {
+        document.getElementById('nextDayButton').disabled = false;
+    }
+
+    // Update the displayed date
+    document.getElementById('selectedDate').innerText = selectedDate.toDateString();
+}
+
+// Function to render the hourly breakdown chart
+function updateHourlyChart() {
+    // Prepare data for the selected date
+    let hourlyData = new Array(24).fill(0);
+    let selectedDateStr = getFormattedDate(selectedDate);
+
+    usageData.forEach(timestamp => {
+        let date = new Date(timestamp);
+        if (getFormattedDate(date) === selectedDateStr) {
+            let hour = date.getHours();
+            hourlyData[hour]++;
+        }
+    });
+
+    // Render or update the chart
+    if (hourlyChart) {
+        // Update existing chart data
+        hourlyChart.data.datasets[0].data = hourlyData;
+        hourlyChart.update();
+    } else {
+        // Create new chart
+        let ctx = document.getElementById('hourlyChart').getContext('2d');
+        hourlyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [...Array(24).keys()].map(h => `${h}:00`),
+                datasets: [{
+                    label: 'Zyns Used',
+                    data: hourlyData,
+                    backgroundColor: '#ff9500',
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        ticks: { color: '#ffffff', font: { size: 12 } },
+                        grid: { display: false },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { 
+                            color: '#ffffff', 
+                            font: { size: 12 }, 
+                            stepSize: 1 
+                        },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        max: Math.max(...hourlyData) + 1 || 5, // Set max dynamically
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                maintainAspectRatio: false,
+            }
+        });
+    }
+}
+
 // Modal functionality
 
 // Get modal elements
@@ -400,4 +526,6 @@ function clearAllData() {
     localStorage.removeItem('totalCans');
     updateStats();
     renderChart();
+    updateHourlyChart();
+    updateDateNavigation();
 }

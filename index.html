@@ -20,7 +20,7 @@
             <button id="incrementButton">Log Zyn Usage (+1)</button>
             <input type="number" id="zynIncrement" min="1" placeholder="Enter amount to add">
             <button id="addButton">Add Zyns</button>
-            <button id="undoButton">Undo Action</button> <!-- Add this line -->
+            <button id="undoButton">Undo Action</button>
         </div>
         <div class="stats">
             <div class="stat-widget">
@@ -78,6 +78,15 @@
         <div class="chart-container">
             <button id="toggleChartButton" class="chart-toggle-button">Switch to Doughnut Chart</button>
             <canvas id="usageChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <div class="date-navigation">
+                <button id="prevDayButton" class="nav-button" disabled>&lt;</button>
+                <span id="selectedDate">Date</span>
+                <button id="nextDayButton" class="nav-button" disabled>&gt;</button>
+            </div>
+            <canvas id="hourlyChart"></canvas>
         </div>
     </div>
 
