@@ -194,6 +194,11 @@ canvas {
     text-align: center;
 }
 
+.settings-item input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
 .primary-button,
 .danger-button {
     width: 100%;

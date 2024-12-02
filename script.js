@@ -12,6 +12,9 @@ let earliestDateWithData;
 let latestDateWithData;
 let hourlyChart; // Define the hourlyChart variable
 
+// Variable for time format
+let timeFormat = '24'; // Default to 24-hour
+
 // Load data from localStorage on page load
 window.onload = function () {
     loadData();
@@ -97,6 +100,16 @@ function loadData() {
     } else {
         document.getElementById('pricePerCan').value = pricePerCan.toFixed(2);
     }
+    
+    // Load time format
+    let savedTimeFormat = localStorage.getItem('timeFormat');
+    if (savedTimeFormat) {
+        timeFormat = savedTimeFormat;
+        // Set the radio button selection
+        document.querySelectorAll('input[name="timeFormat"]').forEach(radio => {
+            radio.checked = radio.value === timeFormat;
+        });
+    }
 }
 
 // Function to save data to localStorage
@@ -105,6 +118,7 @@ function saveData() {
     totalCans = Math.floor(getTotalZyns() / 15);
     localStorage.setItem('totalCans', totalCans);
     localStorage.setItem('pricePerCan', pricePerCan);
+    localStorage.setItem('timeFormat', timeFormat); // Save time format
 }
 
 // Function to update stats on the UI
@@ -310,7 +324,7 @@ function renderChart() {
         chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
+                labels: labels.map(label => formatChartLabel(label)),
                 datasets: [{
                     label: 'Daily Zyn Usage',
                     data: data,
@@ -354,6 +368,11 @@ function renderChart() {
             }
         });
     }
+}
+
+// Function to format chart labels based on time format
+function formatChartLabel(label) {
+    return label;
 }
 
 // Function to toggle chart type
@@ -427,6 +446,7 @@ function updateHourlyChart() {
     // Render or update the chart
     if (hourlyChart) {
         // Update existing chart data
+        hourlyChart.data.labels = hourlyData.map((_, h) => formatHourLabel(h));
         hourlyChart.data.datasets[0].data = hourlyData;
         hourlyChart.update();
     } else {
@@ -435,7 +455,7 @@ function updateHourlyChart() {
         hourlyChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: [...Array(24).keys()].map(h => `${h}:00`),
+                labels: [...Array(24).keys()].map(h => formatHourLabel(h)),
                 datasets: [{
                     label: 'Zyns Used',
                     data: hourlyData,
@@ -468,6 +488,16 @@ function updateHourlyChart() {
             }
         });
     }
+}
+
+// Function to format hour labels based on time format
+function formatHourLabel(hour) {
+    if (timeFormat === '12') {
+        let period = hour >= 12 ? 'PM' : 'AM';
+        let standardHour = hour % 12 || 12;
+        return `${standardHour}:00 ${period}`;
+    }
+    return `${hour}:00`;
 }
 
 // Modal functionality
@@ -504,8 +534,15 @@ saveSettingsButton.onclick = function () {
         return;
     }
     pricePerCan = newPrice;
+    
+    // Get selected time format
+    let selectedFormat = document.querySelector('input[name="timeFormat"]:checked').value;
+    timeFormat = selectedFormat;
+    
     saveData();
     updateStats();
+    updateHourlyChart();
+    renderChart();
     alert('Settings saved successfully.');
     modal.style.display = 'none';
 };
