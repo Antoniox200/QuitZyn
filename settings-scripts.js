@@ -30,6 +30,36 @@ fetch('settingsmodal.html')
             }
         };
 
+        // Initialize settings modal inputs with data from localStorage
+        function initializeSettings() {
+            let pricePerCanInput = document.getElementById('pricePerCan');
+            if (pricePerCanInput) {
+                let storedPrice = localStorage.getItem('pricePerCan');
+                pricePerCanInput.value = storedPrice ? parseFloat(storedPrice).toFixed(2) : '5.99';
+            }
+
+            let showAveragesCheckbox = document.getElementById('showAverages');
+            if (showAveragesCheckbox) {
+                let storedShowAverages = localStorage.getItem('showHourlyAverages');
+                showAveragesCheckbox.checked = storedShowAverages === 'true' || true;
+            }
+
+            let nicotineStrengthInput = document.getElementById('nicotineStrength');
+            if (nicotineStrengthInput) {
+                let storedNicotine = localStorage.getItem('nicotineStrength');
+                nicotineStrengthInput.value = storedNicotine ? parseFloat(storedNicotine) : '3';
+            }
+
+            let timeFormatRadios = document.getElementsByName('timeFormat');
+            let storedTimeFormat = localStorage.getItem('timeFormat') || '24';
+            timeFormatRadios.forEach(radio => {
+                radio.checked = radio.value === storedTimeFormat;
+            });
+        }
+
+        // Call initializeSettings after a short delay to ensure script.js has loaded data
+        setTimeout(initializeSettings, 100);
+
         // Save settings
         saveSettingsButton.onclick = function () {
             let newPrice = parseFloat(document.getElementById('pricePerCan').value);
@@ -71,6 +101,13 @@ fetch('settingsmodal.html')
                 modal.style.display = 'none';
             }
         };
+
+        // Add the event listener for 'showAverages'
+        document.getElementById('showAverages').addEventListener('change', function() {
+            showHourlyAverages = this.checked;
+            saveData();
+            updateHourlyChart();
+        });
 
         // Any other settings-related code...
     })

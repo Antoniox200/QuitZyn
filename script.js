@@ -72,13 +72,6 @@ document.getElementById('nextDayButton').addEventListener('click', function() {
     changeSelectedDate(1);
 });
 
-// Event listener for show averages checkbox
-document.getElementById('showAverages').addEventListener('change', function() {
-    showHourlyAverages = this.checked;
-    saveData();
-    updateHourlyChart();
-});
-
 // Function to log usage
 function logUsage(amount) {
     let now = new Date();
@@ -115,37 +108,24 @@ function loadData() {
     let price = localStorage.getItem('pricePerCan');
     if (price) {
         pricePerCan = parseFloat(price);
-        document.getElementById('pricePerCan').value = pricePerCan.toFixed(2);
-    } else {
-        document.getElementById('pricePerCan').value = pricePerCan.toFixed(2);
     }
     
     // Load time format
     let savedTimeFormat = localStorage.getItem('timeFormat');
     if (savedTimeFormat) {
         timeFormat = savedTimeFormat;
-        // Set the radio button selection
-        document.querySelectorAll('input[name="timeFormat"]').forEach(radio => {
-            radio.checked = radio.value === timeFormat;
-        });
     }
 
     // Load showHourlyAverages setting
     let savedShowAverages = localStorage.getItem('showHourlyAverages');
     if (savedShowAverages !== null) {
         showHourlyAverages = savedShowAverages === 'true';
-        document.getElementById('showAverages').checked = showHourlyAverages;
-    } else {
-        document.getElementById('showAverages').checked = showHourlyAverages; // Fixed typo
     }
     
     // Load nicotine strength
     let savedNicotineStrength = localStorage.getItem('nicotineStrength');
     if (savedNicotineStrength) {
         nicotineStrength = parseFloat(savedNicotineStrength);
-        document.getElementById('nicotineStrength').value = nicotineStrength;
-    } else {
-        document.getElementById('nicotineStrength').value = nicotineStrength;
     }
 }
 
@@ -608,3 +588,8 @@ function clearAllData() {
     updateHourlyChart();
     updateDateNavigation();
 }
+// Make necessary functions globally accessible
+window.saveData = saveData;
+window.updateHourlyChart = updateHourlyChart;
+window.updateStats = updateStats;
+window.renderChart = renderChart;
