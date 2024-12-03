@@ -20,13 +20,13 @@ let timeFormat = '24'; // Default to 24-hour
 let showHourlyAverages = true;
 
 // Load data from localStorage on page load
-window.onload = function () {
+document.addEventListener('DOMContentLoaded', function () {
     loadData();
     updateStats();
     renderChart();
     updateHourlyChart();
     updateDateNavigation();
-};
+});
 
 // Utility function to strip time components from a date
 function getDateWithoutTime(date) {
@@ -136,8 +136,7 @@ function loadData() {
         showHourlyAverages = savedShowAverages === 'true';
         document.getElementById('showAverages').checked = showHourlyAverages;
     } else {
-        document.getElementByverages = true;
-        document.getElementById('showAverages').checked = showHourlyAverages;
+        document.getElementById('showAverages').checked = showHourlyAverages; // Fixed typo
     }
     
     // Load nicotine strength
