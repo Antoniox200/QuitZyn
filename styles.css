@@ -194,7 +194,8 @@ canvas {
     font-size: 18px;
 }
 
-.settings-item input[type="number"] {
+.settings-item input[type="number"],
+.settings-item input[type="checkbox"] {
     width: 80%; /* Adjust width to prevent clipping */
     max-width: 300px;
     padding: 12px;
@@ -204,6 +205,12 @@ canvas {
     color: #ffffff;
     font-size: 16px;
     text-align: center;
+}
+
+.settings-item input[type="checkbox"] {
+    width: auto;
+    padding: 0;
+    margin-top: 10px;
 }
 
 .settings-item input[type="radio"] {

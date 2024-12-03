@@ -15,6 +15,9 @@ let hourlyChart; // Define the hourlyChart variable
 // Variable for time format
 let timeFormat = '24'; // Default to 24-hour
 
+// Variable to store the state of showing averages
+let showHourlyAverages = true;
+
 // Load data from localStorage on page load
 window.onload = function () {
     loadData();
@@ -68,6 +71,13 @@ document.getElementById('nextDayButton').addEventListener('click', function() {
     changeSelectedDate(1);
 });
 
+// Event listener for show averages checkbox
+document.getElementById('showAverages').addEventListener('change', function() {
+    showHourlyAverages = this.checked;
+    saveData();
+    updateHourlyChart();
+});
+
 // Function to log usage
 function logUsage(amount) {
     let now = new Date();
@@ -118,6 +128,16 @@ function loadData() {
             radio.checked = radio.value === timeFormat;
         });
     }
+
+    // Load showHourlyAverages setting
+    let savedShowAverages = localStorage.getItem('showHourlyAverages');
+    if (savedShowAverages !== null) {
+        showHourlyAverages = savedShowAverages === 'true';
+        document.getElementById('showAverages').checked = showHourlyAverages;
+    } else {
+        document.getElementByverages = true;
+        document.getElementById('showAverages').checked = showHourlyAverages;
+    }
 }
 
 // Function to save data to localStorage
@@ -127,6 +147,7 @@ function saveData() {
     localStorage.setItem('totalCans', totalCans);
     localStorage.setItem('pricePerCan', pricePerCan);
     localStorage.setItem('timeFormat', timeFormat); // Save time format
+    localStorage.setItem('showHourlyAverages', showHourlyAverages);
 }
 
 // Function to update stats on the UI
@@ -439,6 +460,18 @@ function updateDateNavigation() {
     document.getElementById('selectedDate').innerText = selectedDate.toDateString();
 }
 
+// Function to calculate hourly averages
+function calculateHourlyAverages() {
+    let hourlyCounts = new Array(24).fill(0);
+    usageData.forEach(timestamp => {
+        let date = new Date(timestamp);
+        let hour = date.getHours();
+        hourlyCounts[hour]++;
+    });
+    let totalDays = Math.max(1, Math.floor(getTotalZyns() / 15));
+    return hourlyCounts.map(count => (count / totalDays).toFixed(2));
+}
+
 // Function to render the hourly breakdown chart
 function updateHourlyChart() {
     // Prepare data for the selected date
@@ -453,24 +486,48 @@ function updateHourlyChart() {
         }
     });
 
+    // Calculate hourly averages
+    let hourlyAverages = calculateHourlyAverages();
+
     // Render or update the chart
     if (hourlyChart) {
         // Update existing chart data
         hourlyChart.data.labels = hourlyData.map((_, h) => formatHourLabel(h));
         hourlyChart.data.datasets[0].data = hourlyData;
+        if (showHourlyAverages) {
+            if (hourlyChart.data.datasets.length < 2) {
+                hourlyChart.data.datasets.push({
+                    label: 'Hourly Average',
+                    data: hourlyAverages,
+                    backgroundColor: '#4cd964',
+                });
+            } else {
+                hourlyChart.data.datasets[1].data = hourlyAverages;
+            }
+        } else {
+            hourlyChart.data.datasets = hourlyChart.data.datasets.slice(0, 1);
+        }
         hourlyChart.update();
     } else {
         // Create new chart
         let ctx = document.getElementById('hourlyChart').getContext('2d');
+        let datasets = [{
+            label: 'Zyns Used',
+            data: hourlyData,
+            backgroundColor: '#ff9500',
+        }];
+        if (showHourlyAverages) {
+            datasets.push({
+                label: 'Hourly Average',
+                data: hourlyAverages,
+                backgroundColor: '#4cd964',
+            });
+        }
         hourlyChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: [...Array(24).keys()].map(h => formatHourLabel(h)),
-                datasets: [{
-                    label: 'Zyns Used',
-                    data: hourlyData,
-                    backgroundColor: '#ff9500',
-                }]
+                datasets: datasets
             },
             options: {
                 scales: {
@@ -486,12 +543,15 @@ function updateHourlyChart() {
                             stepSize: 1 
                         },
                         grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                        max: Math.max(...hourlyData) + 1 || 5, // Set max dynamically
+                        max: Math.max(...hourlyData, ...hourlyAverages) + 1 || 5, // Set max dynamically
                     }
                 },
                 plugins: {
                     legend: {
-                        display: false
+                        display: true,
+                        labels: {
+                            color: '#ffffff'
+                        }
                     }
                 },
                 layout: {
