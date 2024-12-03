@@ -245,10 +245,15 @@ canvas {
 @media (max-width: 600px) {
     h1 {
         font-size: 28px;
+        margin-top: 60px; /* Increase margin to prevent overlap */
     }
 
     .settings-button {
         font-size: 24px;
+        top: 10px; /* Adjust top position */
+        right: 10px; /* Adjust right position */
+        position: fixed; /* Change to fixed positioning */
+        z-index: 1000; /* Ensure it stays above other elements */
     }
 
     .widget button,
