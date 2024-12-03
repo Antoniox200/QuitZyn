@@ -320,3 +320,21 @@ canvas {
 *, *::before, *::after {
     box-sizing: border-box;
 }
+
+.bottom-bar {
+    /* position: fixed; */
+    /* bottom: 0; */
+    width: 100%;
+    background-color: #2c2c2e;
+    color: #ffffff;
+    text-align: center;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
+}
+
+.bottom-bar span {
+    margin: 5px 0;
+}
