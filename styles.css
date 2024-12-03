@@ -112,6 +112,10 @@ h1 {
     height: 400px; /* Added height limit */
 }
 
+#hourly-chart-container {
+    padding-bottom: 20px; /* Added padding to accommodate labels */
+}
+
 .chart-toggle-button {
     position: absolute;
     top: 15px;

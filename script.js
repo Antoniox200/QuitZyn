@@ -494,6 +494,11 @@ function updateHourlyChart() {
                         display: false
                     }
                 },
+                layout: {
+                    padding: {
+                        bottom: 30, // Added bottom padding to prevent label clipping
+                    },
+                },
                 maintainAspectRatio: false,
             }
         });
