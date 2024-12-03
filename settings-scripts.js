@@ -109,6 +109,24 @@ fetch('settingsmodal.html')
             updateHourlyChart();
         });
 
+        // Handle settings section switching
+        document.querySelectorAll('.settings-sidebar li').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all
+                document.querySelectorAll('.settings-sidebar li').forEach(li => li.classList.remove('active'));
+                // Add active class to the clicked item
+                this.classList.add('active');
+                
+                // Hide all sections
+                document.querySelectorAll('.settings-section').forEach(section => section.style.display = 'none');
+                // Show the selected section
+                const section = document.getElementById(this.getAttribute('data-section'));
+                if (section) {
+                    section.style.display = 'block';
+                }
+            });
+        });
+
         // Any other settings-related code...
     })
     .catch(error => console.error('Error loading settings modal:', error));
