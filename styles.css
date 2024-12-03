@@ -154,6 +154,7 @@ canvas {
 }
 
 .modal-content {
+    position: relative; /* Added */
     background-color: #2c2c2e;
     margin: 15% auto;
     padding: 20px;
@@ -167,8 +168,10 @@ canvas {
 }
 
 .close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
     color: #aaaaaa;
-    float: right;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
@@ -395,9 +398,4 @@ canvas {
     top: 25px;
     left: -50px;
     font-size: 25px; /* Increase font size */
-}
-
-/* Ensure styles for Nicotine Used Today are consistent */
-.stat-widget p#todayNicotineUsed {
-    /* ...existing .stat-widget p styles are sufficient... */
 }
