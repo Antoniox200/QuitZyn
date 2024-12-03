@@ -53,10 +53,8 @@ document.getElementById('toggleChartButton').addEventListener('click', function 
 document.getElementById('undoButton').addEventListener('click', () => {
     if (actionStack.length > 0) {
         let lastAction = actionStack.pop();
-        if (lastAction.action === 'increment') {
-            logUsage(-lastAction.amount);
-        } else if (lastAction.action === 'add') {
-            logUsage(-lastAction.amount);
+        if (lastAction.action === 'increment' || lastAction.action === 'add') {
+            removeUsage(lastAction.amount);
         }
     }
 });
@@ -76,6 +74,16 @@ function logUsage(amount) {
     for (let i = 0; i < amount; i++) {
         usageData.push(now.toISOString());
     }
+    saveData();
+    updateStats();
+    renderChart();
+    updateHourlyChart();
+    updateDateNavigation();
+}
+
+// Function to remove usage
+function removeUsage(amount) {
+    usageData.splice(-amount, amount);
     saveData();
     updateStats();
     renderChart();
