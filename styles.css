@@ -16,6 +16,7 @@ header {
     position: relative;
     text-align: center;
     margin-bottom: 20px;
+    z-index: 1000; /* Ensure header is above the ribbon */
 }
 
 h1 {
@@ -143,7 +144,7 @@ canvas {
 .modal {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 1001; /* Ensure modal appears above the ribbon */
     left: 0;
     top: 0;
     width: 100%;
@@ -283,6 +284,25 @@ canvas {
 
     .modal-content {
         margin-top: 30%;
+    }
+
+    .ribbon {
+        width: 100px;
+        height: 100px;
+        z-index: 999; /* Lower z-index to stay below the header */
+    }
+
+    .ribbon span {
+        width: 150px;
+        padding: 8px 0;
+        font-size: 20px; /* Adjust font size for better visibility */
+        top: 15px;
+        left: -40px;
+    }
+
+    header {
+        padding-top: 20px; /* Further increase padding to prevent overlap with ribbon */
+        z-index: 1000; /* Ensure header is above the ribbon */
     }
 }
 
