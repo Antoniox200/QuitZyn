@@ -180,6 +180,8 @@ function updateStats() {
 
     // Update earliest Zyn time today
     document.getElementById('earliestZynTime').innerText = getEarliestZynTimeToday();
+
+    document.getElementById('last24HoursZyns').innerText = getLast24HoursUsage();
 }
 
 // Function to update comparison widgets
@@ -645,4 +647,11 @@ function clearAllData() {
     renderChart();
     updateHourlyChart();
     updateDateNavigation();
+}
+
+// Function to get Zyns used in the last 24 hours
+function getLast24HoursUsage() {
+    let now = new Date();
+    let cutoff = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+    return usageData.filter(timestamp => new Date(timestamp) >= cutoff).length;
 }
