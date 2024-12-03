@@ -219,6 +219,18 @@ canvas {
     transform: scale(1.2);
 }
 
+.settings-item input#nicotineStrength {
+    width: 80%; /* Adjust width to prevent clipping */
+    max-width: 300px;
+    padding: 12px;
+    border-radius: 15px;
+    border: none;
+    background-color: #3a3a3c;
+    color: #ffffff;
+    font-size: 16px;
+    text-align: center;
+}
+
 .primary-button,
 .danger-button {
     width: 100%;
@@ -383,4 +395,9 @@ canvas {
     top: 25px;
     left: -50px;
     font-size: 25px; /* Increase font size */
+}
+
+/* Ensure styles for Nicotine Used Today are consistent */
+.stat-widget p#todayNicotineUsed {
+    /* ...existing .stat-widget p styles are sufficient... */
 }

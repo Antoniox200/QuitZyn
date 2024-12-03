@@ -5,6 +5,7 @@ let chart;
 let currentChartType = 'line'; // Default chart type
 let pricePerCan = 5.99; // Default price per can including NYC sales tax
 let actionStack = [];
+let nicotineStrength = 3; // Default nicotine strength in mg
 
 // Variables for the hourly breakdown chart
 let selectedDate = getDateWithoutTime(new Date()); // Default to today
@@ -138,6 +139,15 @@ function loadData() {
         document.getElementByverages = true;
         document.getElementById('showAverages').checked = showHourlyAverages;
     }
+    
+    // Load nicotine strength
+    let savedNicotineStrength = localStorage.getItem('nicotineStrength');
+    if (savedNicotineStrength) {
+        nicotineStrength = parseFloat(savedNicotineStrength);
+        document.getElementById('nicotineStrength').value = nicotineStrength;
+    } else {
+        document.getElementById('nicotineStrength').value = nicotineStrength;
+    }
 }
 
 // Function to save data to localStorage
@@ -148,6 +158,7 @@ function saveData() {
     localStorage.setItem('pricePerCan', pricePerCan);
     localStorage.setItem('timeFormat', timeFormat); // Save time format
     localStorage.setItem('showHourlyAverages', showHourlyAverages);
+    localStorage.setItem('nicotineStrength', nicotineStrength); // Save nicotine strength
 }
 
 // Function to update stats on the UI
@@ -182,6 +193,10 @@ function updateStats() {
     document.getElementById('earliestZynTime').innerText = getEarliestZynTimeToday();
 
     document.getElementById('last24HoursZyns').innerText = getLast24HoursUsage();
+    
+    // Calculate nicotine used today
+    let todayNicotineUsed = getTodayUsage() * nicotineStrength;
+    document.getElementById('todayNicotineUsed').innerText = `${todayNicotineUsed} mg`;
 }
 
 // Function to update comparison widgets
@@ -450,9 +465,9 @@ function updateDateNavigation() {
         document.getElementById('prevDayButton').disabled = false;
     }
 
-    // Disable next button if selectedDate is greater than or equal to latestDateWithData or today
+    // Disable next button only if selectedDate is today or later
     let today = getDateWithoutTime(new Date());
-    if (selectedDate >= latestDateWithData || selectedDate >= today) {
+    if (selectedDate >= today) {
         document.getElementById('nextDayButton').disabled = true;
     } else {
         document.getElementById('nextDayButton').disabled = false;
@@ -621,6 +636,14 @@ saveSettingsButton.onclick = function () {
         }
     }
     
+    // Save nicotine strength
+    let newNicotineStrength = parseFloat(document.getElementById('nicotineStrength').value);
+    if (isNaN(newNicotineStrength) || newNicotineStrength <= 0) {
+        alert('Please enter a valid nicotine strength.');
+        return;
+    }
+    nicotineStrength = newNicotineStrength;
+    
     saveData();
     updateStats();
     updateHourlyChart();
@@ -643,6 +666,9 @@ function clearAllData() {
     totalCans = 0;
     localStorage.removeItem('usageData');
     localStorage.removeItem('totalCans');
+    // Remove nicotine strength if desired
+    // localStorage.removeItem('nicotineStrength');
+    saveData();
     updateStats();
     renderChart();
     updateHourlyChart();
@@ -652,6 +678,6 @@ function clearAllData() {
 // Function to get Zyns used in the last 24 hours
 function getLast24HoursUsage() {
     let now = new Date();
-    let cutoff = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+    let cutoff = new Date(now.getTime() - (24 * 60 * 60 * 1000)); // 24 hours ago
     return usageData.filter(timestamp => new Date(timestamp) >= cutoff).length;
 }

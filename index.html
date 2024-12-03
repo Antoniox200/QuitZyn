@@ -81,6 +81,10 @@
                 <h2>Zyns Used in Last 24 Hours</h2>
                 <p id="last24HoursZyns">0</p>
             </div>
+            <div class="stat-widget">
+                <h2>Nicotine Used Today</h2>
+                <p id="todayNicotineUsed">0 mg</p>
+            </div>
         </div>
         <div class="chart-container">
             <button id="toggleChartButton" class="chart-toggle-button">Switch to Doughnut Chart</button>
@@ -121,6 +125,10 @@
                 <label for="showAverages">Show Hourly Averages:</label>
                 <input type="checkbox" id="showAverages" checked>
             </div>
+            <div class="settings-item">
+                <label for="nicotineStrength">Nicotine Strength (mg):</label>
+                <input type="number" id="nicotineStrength" min="1" step="0.1" value="3">
+            </div>
             <button id="saveSettingsButton" class="primary-button">Save Settings</button>
             <button id="clearDataButton" class="danger-button">Clear All Data</button>
         </div>
@@ -129,7 +137,7 @@
     <footer class="bottom-bar">
         <span>Made with ❤️ in New York</span>
         <span>QuitZyn is in beta. Please expect it to break as new releases are deployed for the time being</span>
-        <span>Version: Beta 0.72</span>
+        <span>Version: Beta 0.73</span>
     </footer>
 
     <script src="script.js"></script>
