@@ -208,7 +208,9 @@ function calculatePercentage(current, previous) {
 
 // Function to get formatted date string
 function getFormattedDate(date) {
-    return date.toISOString().split('T')[0];
+    return date.getFullYear() + '-' +
+        String(date.getMonth() + 1).padStart(2, '0') + '-' +
+        String(date.getDate()).padStart(2, '0');
 }
 
 // Function to calculate average time between Zyns used
