@@ -17,8 +17,10 @@
     margin: 15% auto;
     padding: 20px;
     border-radius: 20px;
-    width: 90%;
-    max-width: 400px;
+    width: 600px; /* Set a fixed width */
+    max-width: 90%;
+    height: 80vh; /* Set a fixed height */
+    overflow: hidden; /* Prevent overflow */
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -141,10 +143,25 @@
     width: 70%;
     padding: 20px;
     color: #ffffff;
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .settings-section {
     margin-bottom: 20px;
+}
+
+/* Custom Scrollbar */
+.settings-main::-webkit-scrollbar {
+    width: 8px;
+}
+
+.settings-main::-webkit-scrollbar-track {
+    background: #2c2c2e;
+}
+
+.settings-main::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 4px;
 }
 
 /* Responsive Design */
@@ -160,4 +177,13 @@
     .settings-main {
         width: 100%;
     }
+    .modal-content {
+        width: 90%;
+        height: 80vh;
+    }
+}
+
+.settings-section#advanced .danger-button {
+    width: 100%;
+    max-width: 300px;
 }

@@ -11,7 +11,6 @@ fetch('settingsmodal.html')
         let settingsButton = document.getElementById('settingsButton');
         let closeModal = document.getElementById('closeModal');
         let clearDataButton = document.getElementById('clearDataButton');
-        let saveSettingsButton = document.getElementById('saveSettingsButton');
 
         // Open the modal when settings button is clicked
         settingsButton.onclick = function () {
@@ -60,40 +59,6 @@ fetch('settingsmodal.html')
         // Call initializeSettings after a short delay to ensure script.js has loaded data
         setTimeout(initializeSettings, 100);
 
-        // Save settings
-        saveSettingsButton.onclick = function () {
-            let newPrice = parseFloat(document.getElementById('pricePerCan').value);
-            if (isNaN(newPrice) || newPrice <= 0) {
-                alert('Please enter a valid price per can.');
-                return;
-            }
-            pricePerCan = newPrice;
-
-            // Get selected time format
-            let radios = document.getElementsByName('timeFormat');
-            for (let i = 0; i < radios.length; i++) {
-                if (radios[i].checked) {
-                    timeFormat = radios[i].value;
-                    break;
-                }
-            }
-
-            // Save nicotine strength
-            let newNicotineStrength = parseFloat(document.getElementById('nicotineStrength').value);
-            if (isNaN(newNicotineStrength) || newNicotineStrength <= 0) {
-                alert('Please enter a valid nicotine strength.');
-                return;
-            }
-            nicotineStrength = newNicotineStrength;
-
-            saveData();
-            updateStats();
-            updateHourlyChart();
-            renderChart();
-            alert('Settings saved successfully.');
-            modal.style.display = 'none';
-        };
-
         // Clear data with confirmation
         clearDataButton.onclick = function () {
             if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
@@ -125,6 +90,51 @@ fetch('settingsmodal.html')
                     section.style.display = 'block';
                 }
             });
+        });
+
+        // Automatically save settings on change
+        function autoSaveSetting(key, value) {
+            localStorage.setItem(key, value);
+            saveData();
+            updateStats();
+            updateHourlyChart();
+            renderChart();
+        }
+
+        document.getElementById('pricePerCan').addEventListener('change', function() {
+            let newPrice = parseFloat(this.value);
+            if (!isNaN(newPrice) && newPrice > 0) {
+                pricePerCan = newPrice;
+                autoSaveSetting('pricePerCan', newPrice.toFixed(2));
+            } else {
+                alert('Please enter a valid price per can.');
+                this.value = pricePerCan.toFixed(2);
+            }
+        });
+
+        document.getElementsByName('timeFormat').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    timeFormat = this.value;
+                    autoSaveSetting('timeFormat', this.value);
+                }
+            });
+        });
+
+        document.getElementById('showAverages').addEventListener('change', function() {
+            showHourlyAverages = this.checked;
+            autoSaveSetting('showHourlyAverages', this.checked);
+        });
+
+        document.getElementById('nicotineStrength').addEventListener('change', function() {
+            let newNicotine = parseFloat(this.value);
+            if (!isNaN(newNicotine) && newNicotine >= 1) {
+                nicotineStrength = newNicotine;
+                autoSaveSetting('nicotineStrength', newNicotine);
+            } else {
+                alert('Please enter a valid nicotine strength.');
+                this.value = nicotineStrength;
+            }
         });
 
         // Any other settings-related code...
