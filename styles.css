@@ -119,7 +119,7 @@ h1 {
 .chart-toggle-button {
     position: absolute;
     top: 15px;
-    left: 15x;
+    left: 15px;
     background-color: #ff9500;
     color: #121212;
     border: none;
@@ -160,6 +160,9 @@ canvas {
     width: 90%;
     max-width: 400px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items horizontally */
 }
 
 .close-button {
@@ -178,6 +181,10 @@ canvas {
 
 .settings-item {
     margin: 20px 0;
+    width: 100%; /* Ensure settings items take full width of modal */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center contents */
 }
 
 .settings-item label {
@@ -188,7 +195,8 @@ canvas {
 }
 
 .settings-item input[type="number"] {
-    width: 100%;
+    width: 80%; /* Adjust width to prevent clipping */
+    max-width: 300px;
     padding: 12px;
     border-radius: 15px;
     border: none;
@@ -294,4 +302,9 @@ canvas {
     color: #ffffff;
     font-size: 18px;
     font-weight: bold;
+}
+
+/* Ensure all elements use border-box sizing */
+*, *::before, *::after {
+    box-sizing: border-box;
 }
