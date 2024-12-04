@@ -7,7 +7,7 @@
             <div class="settings-sidebar">
                 <ul>
                     <li class="active" data-section="general">General</li>
-                    <li data-section="preferences">Preferences</li>
+                    <li data-section="QuitPlan">Quit Plan</li>
                     <li data-section="advanced">Advanced</li>
                 </ul>
             </div>
@@ -38,7 +38,17 @@
                         <input type="number" id="nicotineStrength" min="1" step="0.1" value="3">
                     </div>
                 </div>
-                <div id="preferences" class="settings-section" style="display: none;">
+                <div id="QuitPlan" class="settings-section" style="display: none;">
+                    <!-- Quit Plan Section -->
+                    <div class="settings-item">
+                        <h3>Quit Plan Aggressiveness</h3>
+                        <div class="aggressiveness-selector">
+                            <div class="option" data-value="1">Aggressive</div>
+                            <div class="option" data-value="2">Normal</div>
+                            <div class="option" data-value="3">Conservative</div>
+                            <div class="selector"></div>
+                        </div>
+                    </div>
                 </div>
                 <div id="advanced" class="settings-section" style="display: none;">
                     <!-- Advanced settings items -->

@@ -111,6 +111,7 @@ h1 {
     position: relative;
     margin-top: 20px;
     height: 400px; /* Added height limit */
+    margin-bottom: 40px; /* Add margin to separate charts */
 }
 
 #hourly-chart-container {
@@ -274,4 +275,45 @@ canvas {
     top: 25px;
     left: -50px;
     font-size: 25px; /* Increase font size */
+}
+
+/* Styles for the Quit Plan Calendar */
+.quit-plan-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #3a3a3c; /* Added background color for better visibility */
+}
+
+.quit-plan-table th,
+.quit-plan-table td {
+    border: 1px solid #444;
+    padding: 10px;
+    text-align: center;
+    color: #ffffff;
+}
+
+.quit-plan-table th {
+    background-color: #3a3a3c;
+}
+
+.quit-plan-table tr:nth-child(even) {
+    background-color: #2c2c2e;
+}
+
+.quit-plan-table tr:nth-child(odd) {
+    background-color: #1c1c1e;
+}
+
+.greyed-out {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+#quitPlanCalendar.greyed-out {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px; /* Adjust as needed */
+    text-align: center;
 }

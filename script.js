@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     renderChart();
     updateHourlyChart();
     updateDateNavigation();
+    renderQuitPlanCalendar(); // Call the function to render the quit plan calendar
 });
 
 // Utility function to strip time components from a date
@@ -588,6 +589,12 @@ function clearAllData() {
     updateHourlyChart();
     updateDateNavigation();
 }
+
+// Call renderQuitPlanCalendar when settings are updated
+function updateSettings() {
+    renderQuitPlanCalendar();
+}
+
 // Make necessary functions globally accessible
 window.saveData = saveData;
 window.updateHourlyChart = updateHourlyChart;

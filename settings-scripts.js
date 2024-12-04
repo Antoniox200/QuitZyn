@@ -54,7 +54,50 @@ fetch('settingsmodal.html')
             timeFormatRadios.forEach(radio => {
                 radio.checked = radio.value === storedTimeFormat;
             });
+
+            // Initialize aggressiveness level
+            let aggressivenessSlider = document.getElementById('aggressivenessLevel');
+            if (aggressivenessSlider) {
+                let storedLevel = localStorage.getItem('aggressivenessLevel') || '2';
+                aggressivenessSlider.value = storedLevel;
+            }
+
+            // Initialize aggressiveness level with the new selector
+            let storedLevel = localStorage.getItem('aggressivenessLevel') || '2';
+            updateSelectorPosition(storedLevel);
+            updateOptionStyles(storedLevel);
         }
+
+        // Define functions for updating selector position and option styles
+        let options = document.querySelectorAll('.aggressiveness-selector .option');
+        let selector = document.querySelector('.aggressiveness-selector .selector');
+
+        function updateSelectorPosition(value) {
+            let index = parseInt(value) - 1;
+            selector.style.left = `calc(${index * 100}% / 3)`;
+        }
+
+        function updateOptionStyles(value) {
+            options.forEach(option => {
+                if (option.getAttribute('data-value') === value) {
+                    option.style.color = '#000000';
+                } else {
+                    option.style.color = '#ffffff';
+                }
+            });
+        }
+
+        // Add click event listeners to options
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                let value = this.getAttribute('data-value');
+                localStorage.setItem('aggressivenessLevel', value);
+                updateSelectorPosition(value);
+                updateOptionStyles(value);
+                // Regenerate and render the quit plan calendar
+                renderQuitPlanCalendar();
+            });
+        });
 
         // Call initializeSettings after a short delay to ensure script.js has loaded data
         setTimeout(initializeSettings, 100);
@@ -136,6 +179,27 @@ fetch('settingsmodal.html')
                 this.value = nicotineStrength;
             }
         });
+
+        document.getElementById('aggressivenessLevel').addEventListener('change', function() {
+            let level = this.value;
+            localStorage.setItem('aggressivenessLevel', level);
+            // Regenerate and render the quit plan calendar
+            renderQuitPlanCalendar();
+        });
+
+        // Helper function to get the aggressiveness label
+        function getAggressivenessLabel(value) {
+            switch (value) {
+                case "1":
+                    return 'Aggressive';
+                case "2":
+                    return 'Normal';
+                case "3":
+                    return 'Conservative';
+                default:
+                    return 'Normal';
+            }
+        }
 
         // Any other settings-related code...
     })
