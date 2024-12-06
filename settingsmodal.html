@@ -49,6 +49,16 @@
                             <div class="selector"></div>
                         </div>
                     </div>
+                    <!-- Input group for manual average consumption -->
+                    <div class="settings-item">
+                        <label for="manualAvgConsumption">Manual Average Zyn Consumption:</label>
+                        <div class="input-group">
+                            <input type="number" id="manualAvgConsumption" min="1" placeholder="Enter average consumption">
+                            <button id="submitManualAvg" aria-label="Submit">&#10132;</button>
+                        </div>
+                    </div>
+                    <!-- Update the regenerate button to match other buttons -->
+                    <button id="regenerateQuitPlanButton" class="primary-button">Regenerate Quit Plan</button>
                 </div>
                 <div id="advanced" class="settings-section" style="display: none;">
                     <!-- Advanced settings items -->

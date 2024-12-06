@@ -16,13 +16,14 @@ function getAggressivenessLabel(value) {
  * Generates a personalized quit plan schedule based on user data.
  * @param {string} aggressivenessLevel - 'Aggressive', 'Normal', or 'Conservative'.
  * @param {number} awakeHours - Number of hours the user is awake per day (default is 16 hours).
+ * @param {number} manualAvgConsumption - Optional manual average consumption to override calculated value.
  * @returns {object} An object containing the total duration, daily schedule, and time between Zyns.
  */
-function generateQuitPlan(aggressivenessLevel, awakeHours = 16) {
-  // Calculate baselineConsumption from average daily usage over the past 5 days
-  const baselineConsumption = calculateAverageUsage(5);
-// console.log("calculateAverageUsage(7): ", calculateAverageUsage(7));
-    // const baselineConsumption = 10;
+function generateQuitPlan(aggressivenessLevel, awakeHours = 16, manualAvgConsumption = null) {
+  // Use manual average consumption if provided
+  const baselineConsumption = manualAvgConsumption !== null
+    ? manualAvgConsumption
+    : calculateAverageUsage(5);
 
   // Aggressiveness factors
   const aggressivenessFactors = {
@@ -91,11 +92,14 @@ function generateQuitPlan(aggressivenessLevel, awakeHours = 16) {
     timeBetweenZyns: dailySchedule[TQD - 1].timeBetweenZyns,
   });
 
-  return {
+  const quitPlan = {
     planType: aggressivenessLevel,
     totalDuration: TQD,
     dailySchedule: condensedSchedule,
   };
+  // Save the quit plan to localStorage
+  localStorage.setItem('quitPlan', JSON.stringify(quitPlan));
+  return quitPlan;
 }
 
 /**
@@ -135,28 +139,16 @@ function renderQuitPlanCalendar() {
     // Clear existing content
     calendarContainer.innerHTML = '';
 
-    // Calculate number of unique days with data
-    let uniqueDates = new Set(usageData.map(timestamp => getFormattedDate(new Date(timestamp))));
-    if (uniqueDates.size < 1) {
-      // Less than 5 days of data, grey out the quit plan schedule
-
-      // Display a message to the user
-      const message = document.createElement('p');
-      message.innerText = 'Not enough data to generate a quit plan. Please log your usage for at least 5 days.';
-      calendarContainer.appendChild(message);
-
-      // Add 'greyed-out' class to the container
-      calendarContainer.classList.add('greyed-out');
-
-      return;
+    // Check for saved quit plan in localStorage
+    const savedPlan = localStorage.getItem('quitPlan');
+    let quitPlan;
+    if (savedPlan) {
+      quitPlan = JSON.parse(savedPlan);
     } else {
-      // Remove 'greyed-out' class if present
-      calendarContainer.classList.remove('greyed-out');
+      // Generate new quit plan and save it
+      let aggressivenessLevel = getAggressivenessLabel(localStorage.getItem('aggressivenessLevel') || '2');
+      quitPlan = generateQuitPlan(aggressivenessLevel);
     }
-
-    // Generate the quit plan using the stored settings
-    let aggressivenessLevel = getAggressivenessLabel(localStorage.getItem('aggressivenessLevel') || '2');
-    const quitPlan = generateQuitPlan(aggressivenessLevel);
 
     // Create a table to display the quit plan
     const table = document.createElement('table');
@@ -197,6 +189,21 @@ function renderQuitPlanCalendar() {
     console.error('Error rendering quit plan calendar:', error);
   }
 }
+
+// Function to regenerate the quit plan, accepting an optional manual average consumption
+function regenerateQuitPlan(manualAvgConsumption = null) {
+  // Remove saved quit plan
+  localStorage.removeItem('quitPlan');
+  // Get aggressiveness level
+  const aggressivenessLevel = getAggressivenessLabel(localStorage.getItem('aggressivenessLevel') || '2');
+  // Generate new quit plan using manual average if provided
+  generateQuitPlan(aggressivenessLevel, 16, manualAvgConsumption);
+  // Render the updated quit plan
+  renderQuitPlanCalendar();
+}
+
+// Expose regenerateQuitPlan to the global scope
+window.regenerateQuitPlan = regenerateQuitPlan;
 
 // Call renderQuitPlanCalendar when the page loads or quit plan settings change
 document.addEventListener('DOMContentLoaded', renderQuitPlanCalendar);

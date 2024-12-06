@@ -583,11 +583,16 @@ function getLast24HoursUsage() {
 function clearAllData() {
     usageData = [];
     totalCans = 0;
+    // Remove the quit plan from localStorage
+    localStorage.removeItem('quitPlan');
+    // Save data and update UI
     saveData();
     updateStats();
     renderChart();
     updateHourlyChart();
     updateDateNavigation();
+    // Re-render the quit plan calendar
+    renderQuitPlanCalendar();
 }
 
 // Call renderQuitPlanCalendar when settings are updated

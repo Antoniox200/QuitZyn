@@ -95,12 +95,12 @@
 }
 
 .primary-button {
-    background-color: #34c759;
+    background-color: #ff9500;
     color: #ffffff;
 }
 
 .primary-button:hover {
-    background-color: #28a745;
+    background-color: #ff950091;
 }
 
 .danger-button {
@@ -283,4 +283,34 @@
 .greyed-out {
     opacity: 0.5;
     pointer-events: none;
+}
+
+/* Style for input group */
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.input-group input {
+    width: calc(100% - 50px);
+    padding: 10px;
+    border-radius: 15px 0 0 15px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.input-group button {
+    width: 50px;
+    padding: 10px;
+    border: none;
+    border-radius: 0 15px 15px 0;
+    background-color: #ff9500;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.input-group button:hover {
+    background-color: #ff950091;
 }

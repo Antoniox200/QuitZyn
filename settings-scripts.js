@@ -66,6 +66,30 @@ fetch('settingsmodal.html')
             let storedLevel = localStorage.getItem('aggressivenessLevel') || '2';
             updateSelectorPosition(storedLevel);
             updateOptionStyles(storedLevel);
+
+            // Add event listener for the 'Regenerate Quit Plan' button
+            const regenerateButton = document.getElementById('regenerateQuitPlanButton');
+            if (regenerateButton) {
+                regenerateButton.addEventListener('click', function() {
+                    regenerateQuitPlan();
+                    alert('Quit plan has been regenerated.');
+                });
+            }
+
+            // Add event listener for the manual average consumption input
+            const submitManualAvgButton = document.getElementById('submitManualAvg');
+            if (submitManualAvgButton) {
+                submitManualAvgButton.addEventListener('click', function() {
+                    const manualAvgInput = document.getElementById('manualAvgConsumption');
+                    const manualAvg = parseFloat(manualAvgInput.value);
+                    if (!isNaN(manualAvg) && manualAvg > 0) {
+                        regenerateQuitPlan(manualAvg);
+                        alert('Quit plan has been regenerated based on your input.');
+                    } else {
+                        alert('Please enter a valid average consumption.');
+                    }
+                });
+            }
         }
 
         // Define functions for updating selector position and option styles
@@ -95,7 +119,7 @@ fetch('settingsmodal.html')
                 updateSelectorPosition(value);
                 updateOptionStyles(value);
                 // Regenerate and render the quit plan calendar
-                renderQuitPlanCalendar();
+                regenerateQuitPlan();
             });
         });
 
