@@ -86,6 +86,8 @@ h1 {
     padding: 15px;
     border-radius: 20px;
     text-align: center;
+    overflow: hidden;
+    word-wrap: break-word;
 }
 
 .stat-widget h2 {

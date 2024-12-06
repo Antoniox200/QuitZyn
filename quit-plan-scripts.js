@@ -20,9 +20,9 @@ function getAggressivenessLabel(value) {
  * @returns {object} An object containing the total duration, daily schedule, and time between Zyns.
  */
 function generateQuitPlan(aggressivenessLevel, awakeHours = 16, manualAvgConsumption = null) {
-  // Use manual average consumption if provided
-  const baselineConsumption = manualAvgConsumption !== null
-    ? manualAvgConsumption
+// Use manual average consumption if provided and round it down to the nearest whole number
+const baselineConsumption = manualAvgConsumption !== null
+    ? Math.floor(manualAvgConsumption)
     : calculateAverageUsage(5);
 
   // Aggressiveness factors
@@ -108,24 +108,24 @@ function generateQuitPlan(aggressivenessLevel, awakeHours = 16, manualAvgConsump
  * @returns {number} Average daily usage.
  */
 function calculateAverageUsage(days) {
-  const now = new Date();
-  const pastDate = new Date();
-  pastDate.setDate(now.getDate() - days + 1);
+    const now = new Date();
+    const pastDate = new Date();
+    pastDate.setDate(now.getDate() - days + 1);
 
-  let totalUsage = 0;
-  for (let i = 0; i < days; i++) {
-    const date = new Date(pastDate);
-    date.setDate(pastDate.getDate() + i);
-    const formattedDate = getFormattedDate(date);
+    let totalUsage = 0;
+    for (let i = 0; i < days; i++) {
+        const date = new Date(pastDate);
+        date.setDate(pastDate.getDate() + i);
+        const formattedDate = getFormattedDate(date);
 
-    const dailyUsage = usageData.filter(timestamp =>
-      getFormattedDate(new Date(timestamp)) === formattedDate
-    ).length;
+        const dailyUsage = usageData.filter(timestamp =>
+            getFormattedDate(new Date(timestamp)) === formattedDate
+        ).length;
 
-    totalUsage += dailyUsage;
-  }
+        totalUsage += dailyUsage;
+    }
 
-  return totalUsage / days;
+    return Math.floor(totalUsage / days);
 }
 
 /**

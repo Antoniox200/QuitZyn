@@ -42,8 +42,9 @@ document.getElementById('incrementButton').addEventListener('click', function ()
 
 document.getElementById('addButton').addEventListener('click', function () {
     let increment = parseInt(document.getElementById('zynIncrement').value);
-    if (isNaN(increment) || increment <= 0) {
-        alert('Please enter a valid number of Zyns to add.');
+    const MAX_INCREMENT = 100; // Set a reasonable maximum limit
+    if (isNaN(increment) || increment <= 0 || increment > MAX_INCREMENT) {
+        alert(`Please enter a valid number of Zyns to add (1 - ${MAX_INCREMENT}).`);
         return;
     }
     logUsage(increment);
