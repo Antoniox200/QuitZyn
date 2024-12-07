@@ -319,3 +319,69 @@ canvas {
     min-height: 200px; /* Adjust as needed */
     text-align: center;
 }
+/* Make the Quit Plan Calendar scrollable */
+#quitPlanCalendar {
+    max-height: 275px;
+    /* Adjust height as needed */
+    overflow-y: auto;
+    width: 100%;
+}
+
+/* Remove scrollbar arrow buttons and add rounded corners for #quitPlanCalendar */
+#quitPlanCalendar::-webkit-scrollbar-button {
+    display: none;
+}
+
+#quitPlanCalendar::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    /* Increase for more rounded corners */
+}
+
+/* Style the scrollbar for Quit Plan Calendar */
+#quitPlanCalendar::-webkit-scrollbar {
+    width: 8px;
+}
+
+#quitPlanCalendar::-webkit-scrollbar-track {
+    background: #2c2c2e;
+}
+
+#quitPlanCalendar::-webkit-scrollbar-thumb {
+    background-color: orange;
+    border-radius: 4px;
+}
+
+/* Optional: Scrollbar styles for Firefox */
+#quitPlanCalendar {
+    scrollbar-width: thin;
+    scrollbar-color: orange #2c2c2e;
+}
+
+/* Highlight the current day in the quit plan schedule */
+.quit-plan-table .current-day {
+    background-color: rgba(76, 217, 100, 0.2);
+    /* Highlight with a light green background */
+}
+
+/* Add scrollable container for Quit Plan Calendar */
+.quit-plan-calendar-container {
+    max-height: 275px;
+    /* Adjust height as needed */
+    overflow-y: auto;
+    width: 100%;
+    padding: 10px 0;
+    /* Optional: Add padding for spacing */
+}
+
+/* Style adjustments if necessary */
+.quit-plan-calendar-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.greyed-out {
+    opacity: 0.5;.greyed-out {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    };

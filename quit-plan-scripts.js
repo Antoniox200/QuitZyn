@@ -23,7 +23,9 @@ function generateQuitPlan(aggressivenessLevel, awakeHours = 16, manualAvgConsump
 // Use manual average consumption if provided and round it down to the nearest whole number
 const baselineConsumption = manualAvgConsumption !== null
     ? Math.floor(manualAvgConsumption)
-    : calculateAverageUsage(5);
+    : calculateAverageUsage(1);
+
+    console.log('Baseline consumption:', baselineConsumption);
 
   // Aggressiveness factors
   const aggressivenessFactors = {
@@ -124,6 +126,9 @@ function calculateAverageUsage(days) {
 
         totalUsage += dailyUsage;
     }
+
+    console.log('Total usage:', totalUsage);
+    console.log('Total days:', days);
 
     return Math.floor(totalUsage / days);
 }
