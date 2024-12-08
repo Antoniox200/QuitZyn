@@ -4,7 +4,6 @@ let totalCans = 0;
 let chart;
 let currentChartType = 'line'; // Default chart type
 let pricePerCan = 5.99; // Default price per can including NYC sales tax
-let actionStack = [];
 let nicotineStrength = 3; // Default nicotine strength in mg
 
 // Variables for the hourly breakdown chart
@@ -37,7 +36,6 @@ function getDateWithoutTime(date) {
 // Event listeners for buttons
 document.getElementById('incrementButton').addEventListener('click', function () {
     logUsage(1);
-    actionStack.push({ action: 'increment', amount: 1 });
 });
 
 document.getElementById('addButton').addEventListener('click', function () {
@@ -48,7 +46,6 @@ document.getElementById('addButton').addEventListener('click', function () {
         return;
     }
     logUsage(increment);
-    actionStack.push({ action: 'add', amount: increment });
     document.getElementById('zynIncrement').value = '';
 });
 
@@ -57,11 +54,19 @@ document.getElementById('toggleChartButton').addEventListener('click', function 
 });
 
 document.getElementById('undoButton').addEventListener('click', () => {
-    if (actionStack.length > 0) {
-        let lastAction = actionStack.pop();
-        if (lastAction.action === 'increment' || lastAction.action === 'add') {
-            removeUsage(lastAction.amount);
+    if (usageData.length > 0) {
+        const lastUsageTime = new Date(usageData[usageData.length - 1]);
+        const now = new Date();
+        const timeDiff = now - lastUsageTime; // difference in milliseconds
+        const oneHourMs = 60 * 60 * 1000; // one hour in milliseconds
+
+        if (timeDiff <= oneHourMs) { //if the last usage was within the last hour
+            removeUsage(1); // Remove the last Zyn entry
+        } else {
+            alert('Cannot undo actions older than 1 hour.');
         }
+    } else {
+        alert('No actions to undo.');
     }
 });
 
