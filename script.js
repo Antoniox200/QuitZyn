@@ -189,11 +189,11 @@ function updateComparison(idSuffix, current, previous) {
 
     // Set amount difference with +/- sign
     let amountSign = amountDiff > 0 ? '+' : amountDiff < 0 ? '-' : '';
-    amountElem.innerText = amountSign + Math.abs(amountDiff);
+    amountElem.innerText = amountSign + Math.abs(amountDiff).toFixed(2); // Truncated to 2 decimals
 
     // Set percentage difference with +/- sign
     let percentSign = percentDiff > 0 ? '+' : percentDiff < 0 ? '-' : '';
-    percentElem.innerText = percentSign + Math.abs(percentDiff) + '%';
+    percentElem.innerText = percentSign + Math.abs(percentDiff).toFixed(2) + '%'; // Truncated to 2 decimals
 
     // Set color based on increase or decrease
     let color = amountDiff > 0 ? 'red' : amountDiff < 0 ? 'green' : 'gray';
@@ -230,7 +230,7 @@ function getUsageForDaysAgo(daysAgo) {
 function calculatePercentage(current, previous) {
     if (previous === 0) return 0;
     let diff = ((current - previous) / previous) * 100;
-    return diff.toFixed(1);
+    return diff.toFixed(2); // Changed from toFixed(1) to toFixed(2)
 }
 
 // Function to get formatted date string
