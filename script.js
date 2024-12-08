@@ -466,7 +466,18 @@ function calculateHourlyAverages() {
         let hour = date.getHours();
         hourlyCounts[hour]++;
     });
-    let totalDays = Math.max(1, Math.floor(getTotalZyns() / 15));
+    if (usageData.length === 0) {
+        var totalDays = 1;
+    } else {
+        const firstTimestamp = Math.min(...usageData.map(t => new Date(t).getTime()));
+        const firstDate = getDateWithoutTime(new Date(firstTimestamp));
+        const today = getDateWithoutTime(new Date());
+        const timeDiff = today - firstDate;
+        const dayInMs = 1000 * 60 * 60 * 24;
+        var totalDays = Math.floor(timeDiff / dayInMs) + 1; // Add 1 to include both first day and today
+        totalDays = Math.max(totalDays, 1); // Ensure at least one day is counted
+    }
+    
     return hourlyCounts.map(count => (count / totalDays).toFixed(2));
 }
 
