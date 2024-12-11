@@ -90,6 +90,24 @@ fetch('settingsmodal.html')
                     }
                 });
             }
+
+            // Initialize Cigarette Mode
+            let cigaretteModeCheckbox = document.getElementById('cigaretteMode');
+            if (cigaretteModeCheckbox) {
+                let storedCigaretteMode = localStorage.getItem('cigaretteMode') === 'true';
+                cigaretteModeCheckbox.checked = storedCigaretteMode;
+                updateCigaretteMode(storedCigaretteMode);
+            }
+
+            // Add event listener for Cigarette Mode
+            if (cigaretteModeCheckbox) {
+                cigaretteModeCheckbox.addEventListener('change', function() {
+                    let isEnabled = this.checked;
+                    localStorage.setItem('cigaretteMode', isEnabled);
+                    updateCigaretteMode(isEnabled);
+                    // Optional: Re-render charts or update other components if necessary
+                });
+            }
         }
 
         // Define functions for updating selector position and option styles
@@ -223,6 +241,12 @@ fetch('settingsmodal.html')
                 default:
                     return 'Normal';
             }
+        }
+
+        // Function to update UI based on Cigarette Mode
+        function updateCigaretteMode(isEnabled) {
+            // Dispatch a custom event to notify other scripts
+            document.dispatchEvent(new CustomEvent('cigaretteModeChanged', { detail: isEnabled }));
         }
 
         // Any other settings-related code...

@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     updateHourlyChart();
     updateDateNavigation();
     renderQuitPlanCalendar(); // Call the function to render the quit plan calendar
+    applyCigaretteMode();
 });
 
 // Utility function to strip time components from a date
@@ -622,3 +623,57 @@ window.saveData = saveData;
 window.updateHourlyChart = updateHourlyChart;
 window.updateStats = updateStats;
 window.renderChart = renderChart;
+
+// Listen for changes in Cigarette Mode setting
+document.addEventListener('cigaretteModeChanged', function(event) {
+    applyCigaretteMode();
+    // Optionally update stats or charts if needed
+});
+
+function applyCigaretteMode() {
+    let isCigaretteMode = localStorage.getItem('cigaretteMode') === 'true';
+    // Update UI text elements
+    updateUIText(isCigaretteMode);
+}
+
+function updateUIText(isCigaretteMode) {
+    // Define mappings from default terms to Cigarette terms
+    const textMappings = {
+        "Zyn": "Cigarette",
+        "Zyns": "Cigarettes",
+        "Zyn Usage": "Cigarette Usage",
+        "Log Zyn Usage (+1)": "Log Cigarette Usage (+1)",
+        "Add Zyns": "Add Cigarettes",
+        "Total Zyns Used": "Total Cigarettes Used",
+        "Zyns Used": "Cigarettes Used",
+        "Daily Zyn Usage": "Daily Cigarette Usage",
+        "Earliest Zyn Taken At": "Earliest Cigarette Smoked At",
+        "Zyns Used in Last 24 Hours": "Cigarettes Smoked in Last 24 Hours",
+        "Total Cans Used": "Total Packs Used",
+        "No Zyns used today": "No Cigarettes Smoked Today",
+    };
+
+    // Update text content of elements with data-text-key attributes
+    document.querySelectorAll('[data-text-key]').forEach(element => {
+        let key = element.getAttribute('data-text-key');
+        let text = isCigaretteMode ? (textMappings[key] || key) : key;
+        element.textContent = text;
+    });
+
+    // Update placeholders and other attributes if necessary
+    let zynIncrementInput = document.getElementById('zynIncrement');
+    if (zynIncrementInput) {
+        zynIncrementInput.placeholder = isCigaretteMode ? 'Enter amount to add' : 'Enter amount to add';
+    }
+
+    // Update chart labels if necessary
+    if (chart) {
+        chart.data.datasets[0].label = isCigaretteMode ? 'Daily Cigarette Usage' : 'Daily Zyn Usage';
+        chart.update();
+    }
+
+    if (hourlyChart) {
+        hourlyChart.data.datasets[0].label = isCigaretteMode ? 'Cigarettes Used' : 'Zyns Used';
+        hourlyChart.update();
+    }
+}

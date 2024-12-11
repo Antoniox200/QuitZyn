@@ -155,6 +155,15 @@ function renderQuitPlanCalendar() {
       quitPlan = generateQuitPlan(aggressivenessLevel);
     }
 
+    let isCigaretteMode = localStorage.getItem('cigaretteMode') === 'true';
+    
+    // Update header texts based on the mode
+    const headerTexts = {
+        dayRange: 'Day(s)',
+        zynsPerDay: isCigaretteMode ? 'Cigarettes per Day' : 'Zyns per Day',
+        timeBetweenZyns: isCigaretteMode ? 'Time Between Cigarettes' : 'Time Between Zyns',
+    };
+
     // Create a table to display the quit plan
     const table = document.createElement('table');
     table.classList.add('quit-plan-table');
@@ -162,10 +171,10 @@ function renderQuitPlanCalendar() {
     // Table header
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
-    ['Day(s)', 'Zyns per Day', 'Time Between Zyns'].forEach(text => {
-      const th = document.createElement('th');
-      th.innerText = text;
-      headerRow.appendChild(th);
+    Object.values(headerTexts).forEach(text => {
+        const th = document.createElement('th');
+        th.innerText = text;
+        headerRow.appendChild(th);
     });
     thead.appendChild(headerRow);
     table.appendChild(thead);
@@ -194,6 +203,11 @@ function renderQuitPlanCalendar() {
     console.error('Error rendering quit plan calendar:', error);
   }
 }
+
+// Listen for changes in Cigarette Mode setting
+document.addEventListener('cigaretteModeChanged', function(event) {
+    renderQuitPlanCalendar();
+});
 
 // Function to regenerate the quit plan, accepting an optional manual average consumption
 function regenerateQuitPlan(manualAvgConsumption = null) {
