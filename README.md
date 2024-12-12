@@ -10,17 +10,7 @@ The **Zyn Usage Tracker** is a web application designed to help users monitor th
 - **Hourly Breakdown**: See an hourly breakdown of your usage for a selected date.
 - **Settings**: Customize the price per can and choose between 24-hour and 12-hour time formats.
 - **Data Management**: Save your data locally and clear all data when needed.
-
-## Installation
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/yourusername/zyn-usage-tracker.git
-    ```
-2. Navigate to the project directory:
-    ```bash
-    cd zyn-usage-tracker
-    ```
-3. Open `index.html` in your preferred web browser.
+- **Quit Plan**: Create a tailored quit plan based on your own consumption statistics
 
 ## Public Site
 
