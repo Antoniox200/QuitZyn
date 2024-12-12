@@ -64,12 +64,37 @@ document.getElementById('undoButton').addEventListener('click', () => {
         if (timeDiff <= oneHourMs) { //if the last usage was within the last hour
             removeUsage(1); // Remove the last Zyn entry
         } else {
-            alert('Cannot undo actions older than 1 hour.');
+            showUndoError('Cannot undo actions older than 1 hour.');
         }
     } else {
-        alert('No actions to undo.');
+        showUndoError('No actions to undo.');
     }
 });
+
+// Helper function to show error messages
+function showUndoError(messageText) {
+    const undoButton = document.getElementById('undoButton');
+    // Check if an error message is already displayed
+    if (!undoButton.parentNode.querySelector('.undo-error-message')) {
+        // Shake the button and display the message
+        undoButton.classList.add('shake');
+        let message = document.createElement('div');
+        message.className = 'undo-error-message';
+        message.innerText = messageText;
+        // Insert message after the undo button
+        undoButton.parentNode.insertBefore(message, undoButton.nextSibling);
+        // Remove message and shake class after a few seconds
+        setTimeout(() => {
+            undoButton.classList.remove('shake');
+            message.remove();
+        }, 3000); // display for 3 seconds
+    } else {
+        // Re-apply the shake animation
+        undoButton.classList.remove('shake');
+        void undoButton.offsetWidth; // Trigger reflow to restart the animation
+        undoButton.classList.add('shake');
+    }
+}
 
 // Event listeners for date navigation
 document.getElementById('prevDayButton').addEventListener('click', function() {
