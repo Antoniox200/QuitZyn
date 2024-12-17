@@ -249,6 +249,14 @@ fetch('settingsmodal.html')
             document.dispatchEvent(new CustomEvent('cigaretteModeChanged', { detail: isEnabled }));
         }
 
+        // Function to handle "cigarette mode" checkbox change
+        document.getElementById('cigaretteModeCheckbox').addEventListener('change', function() {
+            let isChecked = this.checked;
+            localStorage.setItem('cigaretteMode', isChecked);
+            // Dispatch a custom event to notify other scripts
+            document.dispatchEvent(new Event('cigaretteModeChanged'));
+        });
+
         // Any other settings-related code...
     })
     .catch(error => console.error('Error loading settings modal:', error));

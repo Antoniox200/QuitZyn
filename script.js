@@ -18,9 +18,25 @@ let timeFormat = '24'; // Default to 24-hour
 // Variable to store the state of showing averages
 let showHourlyAverages = true;
 
-// Load data from localStorage on page load
+// Load affirmations based on "cigarette mode"
+let affirmations = [];
+
+// Function to load affirmations based on "cigarette mode"
+function loadAffirmations() {
+    let isCigaretteMode = localStorage.getItem('cigaretteMode') === 'true';
+    let affirmationsFile = isCigaretteMode ? 'affirmations-cigarette.json' : 'affirmations.json';
+    fetch(affirmationsFile)
+        .then(response => response.json())
+        .then(data => {
+            affirmations = data;
+        })
+        .catch(error => console.error('Error loading affirmations:', error));
+}
+
+// Load data and affirmations on page load
 document.addEventListener('DOMContentLoaded', function () {
     loadData();
+    loadAffirmations(); // Load affirmations
     updateStats();
     renderChart();
     updateHourlyChart();
@@ -37,6 +53,7 @@ function getDateWithoutTime(date) {
 // Event listeners for buttons
 document.getElementById('incrementButton').addEventListener('click', function () {
     logUsage(1);
+    displayRandomAffirmation(); // Display a random affirmation
 });
 
 document.getElementById('addButton').addEventListener('click', function () {
@@ -659,6 +676,8 @@ function applyCigaretteMode() {
     let isCigaretteMode = localStorage.getItem('cigaretteMode') === 'true';
     // Update UI text elements
     updateUIText(isCigaretteMode);
+    // Reload affirmations
+    loadAffirmations();
 }
 
 function updateUIText(isCigaretteMode) {
@@ -700,5 +719,15 @@ function updateUIText(isCigaretteMode) {
     if (hourlyChart) {
         hourlyChart.data.datasets[0].label = isCigaretteMode ? 'Cigarettes Used' : 'Zyns Used';
         hourlyChart.update();
+    }
+}
+
+// Function to display a random affirmation
+function displayRandomAffirmation() {
+    if (affirmations.length > 0) {
+        let randomIndex = Math.floor(Math.random() * affirmations.length);
+        let affirmationText = affirmations[randomIndex];
+        let affirmationContainer = document.getElementById('affirmationContainer');
+        affirmationContainer.textContent = affirmationText;
     }
 }
